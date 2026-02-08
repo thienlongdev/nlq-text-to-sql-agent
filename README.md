@@ -1,78 +1,99 @@
-\# NLQ Text-to-SQL Agent 
+🧠 NLQ Text-to-SQL Agent (Vietnamese → PostgreSQL)
 
+Hệ thống chuyển đổi câu hỏi ngôn ngữ tự nhiên (Tiếng Việt) sang câu lệnh SQL PostgreSQL hợp lệ, sử dụng LLM kết hợp LangGraph theo mô hình agent đa vai trò.
 
+Mục tiêu của project là cho phép người dùng không cần biết SQL vẫn có thể truy vấn cơ sở dữ liệu chính xác và an toàn.
 
-Hệ thống chuyển đổi câu hỏi ngôn ngữ tự nhiên (Tiếng Việt) sang câu lệnh SQL PostgreSQL hợp lệ bằng cách sử dụng LLM + LangGraph theo mô hình agent với nhiều vai trò.
+🎯 Mục tiêu
 
+Nhập câu hỏi bằng tiếng Việt
 
+Phân tích ngữ nghĩa và ý định truy vấn
 
-\## Mục tiêu
+Sinh SQL thuần, hợp lệ với PostgreSQL
 
-Cho phép người dùng nhập câu hỏi tiếng Việt và nhận về SQL thuần túy.
+Kiểm tra và xác thực SQL trước khi trả kết quả
 
+Hạn chế truy vấn nguy hiểm (DROP, DELETE, …)
 
+🏗️ Kiến trúc hệ thống
 
-\## Kiến trúc
+Luồng xử lý theo mô hình multi-agent với LangGraph:
 
 User → Analyst → Architect → Validator → SQL
 
+Vai trò
 
+User: Nhập câu hỏi tiếng Việt
 
-\## Cấu trúc project
+Analyst: Phân tích ý định, bảng, cột, điều kiện
+
+Architect: Xây dựng cấu trúc câu SQL
+
+Validator: Kiểm tra cú pháp, an toàn, schema
+
+SQL: Câu lệnh SQL cuối cùng
+
+📂 Cấu trúc project
 
 NLQ-PROJECT/
+├── app.py # Entry point / giao diện chạy
+├── main.py # Logic điều phối
+├── graph.py # LangGraph workflow
+├── db_ops.py # Thao tác PostgreSQL
+├── evaluate.py # Đánh giá kết quả sinh SQL
+├── requirements.txt # Thư viện cần cài đặt
+├── .gitignore
+└── README.md
 
-\- app.py
+🧰 Công nghệ sử dụng
 
-\- main.py
+Python
 
-\- graph.py
+LangGraph
 
-\- db\_ops.py
+LangChain
 
-\- evaluate.py
+PostgreSQL
 
-\- requirements.txt
+Large Language Model (LLM)
 
-\- .gitignore
+⚙️ Cài đặt
 
-\- README.md
+Clone repo
+git clone <repo-url>
+cd NLQ-PROJECT
 
+Cài thư viện
+pip install -r requirements.txt
 
+Cấu hình môi trường
 
-\## Công nghệ
+Tạo file .env và thêm:
+MEGALLM_API_KEY=your_api_key
+MEGA_API_BASE=your_url
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=your_database
+DB_USER=your_user
+DB_PASSWORD=your_password
 
-\- Python
+▶️ Chạy chương trình
 
-\- LangGraph
+python app.py
 
-\- LangChain
+Ví dụ câu hỏi:
+Liệt kê 5 khách hàng có nhiều đơn hàng nhất
 
-\- PostgreSQL
+Ví dụ SQL trả về:
+SELECT customer_id, COUNT(*) AS total_orders
+FROM orders
+GROUP BY customer_id
+ORDER BY total_orders DESC
+LIMIT 5;
 
-\- Streamlit
+📌 Ghi chú
 
+SQL trả về là SQL thuần, không kèm giải thích
 
-
-\## Cách chạy
-
-python main.py
-
-streamlit run app.py
-
-
-
-\## Ghi chú
-
-Hệ thống chỉ sinh SQL, không thực thi.
-
-
-
-\## Tác giả
-
-Nguyễn Tú Thiên Long
-
-https://github.com/thienlongdev
-
-
-
+Có thể mở rộng: hỗ trợ nhiều CSDL, trả kết quả truy vấn, logging & đánh giá chất lượng SQL
