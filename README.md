@@ -35,16 +35,17 @@ Validator: Kiểm tra cú pháp, an toàn, schema
 SQL: Câu lệnh SQL cuối cùng
 
 📂 Cấu trúc project
-
+```
 NLQ-PROJECT/
-├── app.py # Entry point / giao diện chạy
-├── main.py # Logic điều phối
-├── graph.py # LangGraph workflow
-├── db_ops.py # Thao tác PostgreSQL
-├── evaluate.py # Đánh giá kết quả sinh SQL
-├── requirements.txt # Thư viện cần cài đặt
+├── app.py              # Entry point / giao diện chạy
+├── main.py             # Logic điều phối
+├── graph.py            # LangGraph workflow
+├── db_ops.py           # Thao tác PostgreSQL
+├── evaluate.py         # Đánh giá kết quả sinh SQL
+├── requirements.txt    # Thư viện cần cài đặt
 ├── .gitignore
 └── README.md
+```
 
 🧰 Công nghệ sử dụng
 
