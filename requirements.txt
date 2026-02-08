@@ -1,0 +1,7 @@
+langchain
+langchain-google-genai
+langgraph
+psycopg2-binary
+python-dotenv
+pandas
+tabulate
