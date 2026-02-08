@@ -62,37 +62,42 @@ Large Language Model (LLM)
 ⚙️ Cài đặt
 
 Clone repo
+```
 git clone <repo-url>
 cd NLQ-PROJECT
-
+```
 Cài thư viện
+```
 pip install -r requirements.txt
-
+```
 Cấu hình môi trường
 
 Tạo file .env và thêm:
-MEGALLM_API_KEY=your_api_key
+```
+MEGA_API_KEY=your_api_key
 MEGA_API_BASE=your_url
 DB_HOST=localhost
 DB_PORT=5432
 DB_NAME=your_database
 DB_USER=your_user
 DB_PASSWORD=your_password
-
+```
 ▶️ Chạy chương trình
-
+```
 python app.py
-
+```
 Ví dụ câu hỏi:
+```
 Liệt kê 5 khách hàng có nhiều đơn hàng nhất
-
+```
 Ví dụ SQL trả về:
+```
 SELECT customer_id, COUNT(*) AS total_orders
 FROM orders
 GROUP BY customer_id
 ORDER BY total_orders DESC
 LIMIT 5;
-
+```
 📌 Ghi chú
 
 SQL trả về là SQL thuần, không kèm giải thích
