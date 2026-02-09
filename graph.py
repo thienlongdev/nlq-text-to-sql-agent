@@ -130,3 +130,5 @@ workflow.add_conditional_edges(
 
 # workflow.add_edge("executor", END) 
 app = workflow.compile()
+
+print(app.get_graph().draw_ascii())

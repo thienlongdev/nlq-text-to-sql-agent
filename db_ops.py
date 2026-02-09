@@ -31,7 +31,7 @@ def get_all_tables():
         with get_connection() as conn:
             with conn.cursor() as cur:
                 cur.execute(query)
-                return [row[0] for row in cur.fetchall()] # ['users', 'products', 'orders']
+                return [row[0] for row in cur.fetchall()] # ['users', 'products', 'orders'], fetchall: [('users',), ('orders',)]
     except Exception as e:
         print(f"Lỗi lấy danh sách bảng: {e}")
         return []
@@ -70,7 +70,7 @@ def get_schema_details(table_names):
                         SELECT column_name, data_type 
                         FROM information_schema.columns 
                         WHERE table_name = '{table}';
-                    """)
+                    """) 
                     columns = cur.fetchall() # list[tuple[str, str]]
                     
                     # 2. Lấy thông tin khóa ngoại
@@ -103,28 +103,6 @@ def get_schema_details(table_names):
         print(f"Lỗi lấy schema: {e}")
         return ""
 
-def execute_sql_safe(query):
-    """Thực thi SQL an toàn"""
-    try:
-        with get_connection() as conn:
-            with conn.cursor() as cur:
-                cur.execute(query)
-                
-                # Kiểm tra xem query có trả về dữ liệu không (SELECT)
-                if cur.description: # Chỉ SELECT mới có
-                    columns = [desc[0] for desc in cur.description] # ["id", "name", "price"]
-                    results = cur.fetchall()
-                    return {"success": True, "data": results, "columns": columns}
-                
-                # Trường hợp INSERT/UPDATE/DELETE
-                conn.commit() 
-                return {"success": True, "data": [], "columns": []}
-                
-    except psycopg2.Error as e:
-        return {"success": False, "error": f"Postgres Error: {e.pgcode} - {e.pgerror}"}
-    except Exception as e:
-        return {"success": False, "error": str(e)}
-
 def check_sql_syntax(query):
     """Kiểm tra cú pháp bằng EXPLAIN (không chạy lệnh thật)"""
     try:
@@ -134,3 +112,27 @@ def check_sql_syntax(query):
                 return {"valid": True, "error": None}
     except Exception as e:
         return {"valid": False, "error": str(e)}
+        
+
+# def execute_sql_safe(query):
+#     """Thực thi SQL an toàn"""
+#     try:
+#         with get_connection() as conn:
+#             with conn.cursor() as cur:
+#                 cur.execute(query)
+                
+#                 # Kiểm tra xem query có trả về dữ liệu không (SELECT)
+#                 if cur.description: # Chỉ SELECT mới có
+#                     columns = [desc[0] for desc in cur.description] # ["id", "name", "price"]
+#                     results = cur.fetchall()
+#                     return {"success": True, "data": results, "columns": columns}
+                
+#                 # Trường hợp INSERT/UPDATE/DELETE
+#                 conn.commit() 
+#                 return {"success": True, "data": [], "columns": []}
+                
+#     except psycopg2.Error as e:
+#         return {"success": False, "error": f"Postgres Error: {e.pgcode} - {e.pgerror}"}
+#     except Exception as e:
+#         return {"success": False, "error": str(e)}
+
