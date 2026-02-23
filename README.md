@@ -1,6 +1,6 @@
-# NLQ Text-to-SQL Agent (Vietnamese → PostgreSQL)
+# NLQ Text-to-SQL Agent
 
-Hệ thống chuyển đổi câu hỏi ngôn ngữ tự nhiên (Tiếng Việt) sang câu lệnh SQL PostgreSQL hợp lệ, sử dụng LLM kết hợp LangGraph theo mô hình agent đa vai trò.
+Hệ thống chuyển đổi câu hỏi ngôn ngữ tự nhiên (Tiếng Việt) sang câu lệnh SQL PostgreSQL hợp lệ, sử dụng LLM kết hợp LangGraph theo mô hình multi-agent nhiều vai trò.
 
 Mục tiêu của project là cho phép người dùng không cần biết SQL vẫn có thể truy vấn cơ sở dữ liệu chính xác và an toàn.
 
@@ -14,37 +14,55 @@ Sinh SQL thuần, hợp lệ với PostgreSQL
 
 Kiểm tra và xác thực SQL trước khi trả kết quả
 
-Hạn chế truy vấn nguy hiểm (DROP, DELETE, …)
+Hạn chế truy vấn nguy hiểm (DROP, DELETE, UPDATE, …)
 
 # Kiến trúc hệ thống
 
 Luồng xử lý theo mô hình multi-agent với LangGraph:
 
-User → Analyst → Architect → Validator → SQL
+User → Schema Analyst → SQL Architect → Validator → Executor → SQL Result
 
 Vai trò
 
 User: Nhập câu hỏi tiếng Việt
 
-Analyst: Phân tích ý định, bảng, cột, điều kiện
+Schema Analyst: Phân tích schema, bảng, cột liên quan
 
-Architect: Xây dựng cấu trúc câu SQL
+SQL Architect: Xây dựng cấu trúc và câu lệnh SQL
 
-Validator: Kiểm tra cú pháp, an toàn, schema
+Validator: Kiểm tra cú pháp, tính hợp lệ và an toàn
 
-SQL: Câu lệnh SQL cuối cùng
+Executor: Thực thi truy vấn và trả kết quả
 
+SQL Result: Câu lệnh SQL và dữ liệu truy vấn
 # Cấu trúc project
 ```
-NLQ-PROJECT/
-├── app.py              # Entry point / giao diện chạy
-├── main.py             # Logic điều phối
-├── graph.py            # LangGraph workflow
-├── db_ops.py           # Thao tác PostgreSQL
-├── evaluate.py         # Đánh giá kết quả sinh SQL
-├── requirements.txt    # Thư viện cần cài đặt
+nlq-text-to-sql-agent/
+├── agents/
+│   ├── base.py
+│   ├── config.py
+│   ├── executor.py
+│   ├── registry.py
+│   ├── schema_analyst.py
+│   ├── sql_architect.py
+│   └── validator.py
+│
+├── core/
+│   ├── db_ops.py
+│   ├── main.py
+│   └── multi_agent_graph.py
+│
+├── venv/
+├── .dockerignore
+├── .env
 ├── .gitignore
-└── README.md
+├── api.py
+├── UI.py
+├── backup.sql
+├── docker-compose.yml
+├── Dockerfile
+├── README.md
+└── requirements.txt
 ```
 
 # Công nghệ sử dụng
@@ -57,14 +75,16 @@ LangChain
 
 PostgreSQL
 
-Large Language Model (LLM)
+Large Language Model 
+
+Docker
 
 # Cài đặt
 
 ## Clone repo
 ```
-git clone <repo-url>
-cd NLQ-PROJECT
+git clone https://github.com/thienlongdev/nlq-text-to-sql-agent.git
+cd nlq-text-to-sql-agent
 ```
 ## Cài thư viện
 ```
@@ -75,16 +95,25 @@ pip install -r requirements.txt
 ### Tạo file .env và thêm:
 ```
 MEGA_API_KEY=your_api_key
-MEGA_API_BASE=your_url
+MEGA_URL=your_llm_endpoint
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=your_password
+POSTGRES_DB=your_db
 DB_HOST=localhost
 DB_PORT=5432
 DB_NAME=your_database
 DB_USER=your_user
 DB_PASSWORD=your_password
 ```
+
+### Lưu ý:
+
+- Nếu chạy local → DB_HOST=localhost
+
+- Nếu chạy bằng Docker Compose → DB_HOST=db
 # Chạy chương trình
 ```
-python app.py
+python -m streamlit run UI.py
 ```
 ## Ví dụ câu hỏi:
 ```
@@ -92,14 +121,18 @@ Liệt kê 5 khách hàng có nhiều đơn hàng nhất
 ```
 ## Ví dụ SQL trả về:
 ```
-SELECT customer_id, COUNT(*) AS total_orders
-FROM orders
-GROUP BY customer_id
-ORDER BY total_orders DESC
+SELECT
+    c.custid,
+    c.companyname,
+    COUNT(s.orderid) AS order_count
+FROM
+    customer c
+JOIN
+    salesorder s ON c.custid = s.custid
+GROUP BY
+    c.custid,
+    c.companyname
+ORDER BY
+    order_count DESC
 LIMIT 5;
 ```
-# Ghi chú
-
-SQL trả về là SQL thuần, không kèm giải thích
-
-Có thể mở rộng: hỗ trợ nhiều CSDL, trả kết quả truy vấn, logging & đánh giá chất lượng SQL
