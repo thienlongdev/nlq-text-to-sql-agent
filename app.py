@@ -1,5 +1,5 @@
 import streamlit as st
-from multi_agent_graph import app  
+from core.multi_agent_graph import app  
 
 st.set_page_config(
     page_title="SQL Generator",

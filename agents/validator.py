@@ -6,7 +6,7 @@ Validator agent:
 """
 
 from agents.base import BaseAgent, AgentState
-import db_ops
+from core import db_ops
 import logging
 import re
 

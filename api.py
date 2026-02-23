@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from multi_agent_graph import build_nlq_to_sql_graph
+from core.multi_agent_graph import build_nlq_to_sql_graph
 
 app = FastAPI(title="NLQ-to-SQL API")
 

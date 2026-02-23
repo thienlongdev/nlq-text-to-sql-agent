@@ -4,7 +4,7 @@ from langchain_core.output_parsers import StrOutputParser
 
 from agents.base import BaseAgent, AgentState
 from agents.config import get_llm
-import db_ops
+from core import db_ops
 
 
 class SchemaAnalystAgent(BaseAgent):
