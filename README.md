@@ -77,6 +77,8 @@ PostgreSQL
 
 Large Language Model 
 
+FastAPI
+
 Docker
 
 # Cài đặt
