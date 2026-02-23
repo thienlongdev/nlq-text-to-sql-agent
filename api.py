@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from core.multi_agent_graph import build_nlq_to_sql_graph
 
-app = FastAPI(title="NLQ-to-SQL API")
+app_api = FastAPI(title="NLQ-to-SQL API")
 
 graph = build_nlq_to_sql_graph(include_executor=True)
 
@@ -15,7 +15,7 @@ class QueryResponse(BaseModel):
     columns: list | None = None
 
 
-@app.post("/query", response_model=QueryResponse)
+@app_api.post("/query", response_model=QueryResponse)
 async def run_query(req: QueryRequest):
     try:
         state = {"question": req.question}

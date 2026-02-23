@@ -10,3 +10,4 @@ tabulate
 streamlit
 fastapi
 uvicorn
+psycopg2
