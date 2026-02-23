@@ -1,4 +1,4 @@
-from graph import app
+from multi_agent_graph import app
 
 def chatbot():
     print("Bot: Chào bạn! Hãy đưa tôi text, tôi sẽ chuyển nó thành SQL.")

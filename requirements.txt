@@ -1,7 +1,12 @@
 langchain
+langchain-openai
 langchain-google-genai
 langgraph
+langchain-core
 psycopg2-binary
 python-dotenv
 pandas
 tabulate
+streamlit
+fastapi
+uvicorn
