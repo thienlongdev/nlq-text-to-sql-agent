@@ -3,13 +3,8 @@ import psycopg2
 from psycopg2 import sql
 from dotenv import load_dotenv
 
-# Load biến môi trường
 load_dotenv()
 
-
-# =========================
-# CONNECTION
-# =========================
 def get_connection():
     try:
         conn = psycopg2.connect(
@@ -26,9 +21,6 @@ def get_connection():
         raise
 
 
-# =========================
-# SCHEMA DISCOVERY
-# =========================
 def get_all_tables():
     query = """
         SELECT table_name
@@ -71,7 +63,6 @@ def get_schema_details(table_names):
             with conn.cursor() as cur:
 
                 for table in table_names:
-                    # Get columns safely
                     cur.execute("""
                         SELECT column_name, data_type
                         FROM information_schema.columns
@@ -102,10 +93,6 @@ def get_schema_details(table_names):
         print(f"[DB ERROR] get_schema_details: {e}")
         return ""
 
-
-# =========================
-# SQL VALIDATION
-# =========================
 def check_sql_syntax(query):
     """
     Validate SQL using EXPLAIN.
@@ -124,8 +111,6 @@ def check_sql_syntax(query):
     try:
         with get_connection() as conn:
             with conn.cursor() as cur:
-
-                # Optional: prevent long-running explain
                 cur.execute("SET statement_timeout = 2000;")
 
                 cur.execute("EXPLAIN " + cleaned)
@@ -144,10 +129,6 @@ def check_sql_syntax(query):
             "error": str(e),
         }
 
-
-# =========================
-# SAFE EXECUTION
-# =========================
 def execute_sql_safe(query):
     """
     Execute SQL safely.

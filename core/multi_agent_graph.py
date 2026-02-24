@@ -50,11 +50,7 @@ def build_nlq_to_sql_graph(include_executor: bool = False):
     return workflow.compile()
 
 
-# Default app: same behavior as original graph (no executor in graph)
 app = build_nlq_to_sql_graph(include_executor=False)
-
-# With execution: use this if you want the graph to run SQL and return results
-# app_with_executor = build_nlq_to_sql_graph(include_executor=True)
 
 if __name__ == "__main__":
     print(app.get_graph().draw_ascii())

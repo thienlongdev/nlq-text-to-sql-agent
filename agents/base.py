@@ -11,30 +11,16 @@ class AgentState(TypedDict, total=False):
     Shared state passed between all agents in the pipeline.
     Each agent reads from this state and returns only updated fields.
     """
-
-    # User input
     question: str
-
-    # Table discovery
     all_table_names: List[str]
     selected_tables: List[str]
-
-    # Schema + SQL generation
     schema_context: str
     sql_query: str
-
-    # Execution result
     query_result: list
     query_columns: list
-
-    # Error handling
     error: Optional[str]
     retry_count: int
-
-    # Debug / orchestration tracking
     last_agent: str
-
-    # Optional: UI messages
     messages: List[dict]
 
 

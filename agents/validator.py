@@ -52,7 +52,6 @@ class ValidatorAgent(BaseAgent):
             }
         )
 
-        # 1️⃣ Empty query check
         if not query:
             return {
                 "error": "Empty SQL query.",
@@ -60,7 +59,6 @@ class ValidatorAgent(BaseAgent):
                 "last_agent": self.name,
             }
 
-        # 2️⃣ Only allow SELECT queries
         if not is_select_query(query):
             return {
                 "error": "Only SELECT queries are allowed.",
@@ -68,7 +66,6 @@ class ValidatorAgent(BaseAgent):
                 "last_agent": self.name,
             }
 
-        # 3️⃣ Block dangerous keywords
         if contains_forbidden_keyword(query):
             return {
                 "error": "Forbidden SQL operation detected.",
@@ -76,19 +73,17 @@ class ValidatorAgent(BaseAgent):
                 "last_agent": self.name,
             }
 
-        # 4️⃣ Enforce LIMIT (optional safety guard)
         if "LIMIT" not in query.upper():
             query = query.rstrip(";") + " LIMIT 100"
             logger.info({"stage": "limit_appended", "modified_query": query})
 
-        # 5️⃣ Syntax validation using EXPLAIN
         check = db_ops.check_sql_syntax(query)
 
         if check.get("valid"):
             logger.info({"stage": "validation_success"})
             return {
                 "error": None,
-                "sql_query": query,  # return possibly modified query
+                "sql_query": query,  
                 "last_agent": self.name,
             }
 

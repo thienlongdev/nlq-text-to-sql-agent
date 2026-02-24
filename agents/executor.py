@@ -50,8 +50,6 @@ class ExecutorAgent(BaseAgent):
                 "retry_count": retry_count,
             }
         )
-
-        # 🚨 Defense-in-depth: re-check safety
         if not query:
             return {
                 "error": "Empty SQL query.",
@@ -73,7 +71,6 @@ class ExecutorAgent(BaseAgent):
                 "last_agent": self.name,
             }
 
-        # 🔎 Execute query safely
         try:
             result = db_ops.execute_sql_safe(query)
         except Exception as e:
